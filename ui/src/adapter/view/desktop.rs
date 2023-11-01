@@ -125,29 +125,16 @@ pub async fn run(sender: Sender<Event>, receiver: Receiver<Event>) {
                     let menu = main.menu_handle();
                     let tray = app.tray_handle();
                     match event {
-                        Event::BrowserUpdate((action, data)) => match action.as_str() {
-                            "file" => {
-                                let list = ["hbbs.out", "hbbs.err", "hbbr.out", "hbbr.err", ".env"];
-                                let id = data.as_str();
-                                if list.contains(&id) {
-                                    for file in list {
-                                        menu.get_item(file)
-                                            .set_selected(file == id)
-                                            .unwrap_or_default();
-                                    }
-                                    // println!(
-                                    //     "emit {}: {}",
-                                    //     std::time::SystemTime::now()
-                                    //         .duration_since(std::time::UNIX_EPOCH)
-                                    //         .unwrap_or_default()
-                                    //         .as_millis(),
-                                    //     data
-                                    // );
-                                    app.emit_all("__update__", (action, data))
+                        Event::BrowserUpdate((action, data)) => if let "file" = action.as_str() {
+                            let list = ["hbbs.out", "hbbs.err", "hbbr.out", "hbbr.err", ".env"];
+                            let id = data.as_str();
+                            if list.contains(&id) {
+                                for file in list {
+                                    menu.get_item(file)
+                                        .set_selected(file == id)
                                         .unwrap_or_default();
                                 }
                             }
-                            _ => (),
                         },
                         Event::ViewRenderAppExit => exit(0),
                         Event::ViewRenderServiceState(state) => {

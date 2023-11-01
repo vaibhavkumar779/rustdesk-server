@@ -20,9 +20,8 @@ pub async fn create(sender: Sender<Event>, receiver: Receiver<Event>) {
                         Event::BrowserInit => {
                             send(Event::BrowserUpdate(("file".to_owned(), file.to_owned())));
                         }
-                        Event::BrowserAction(action) => match action.as_str() {
-                            "restart" => service.restart(),
-                            _ => (),
+                        Event::BrowserAction(action) => if let "restart" = action.as_str() {
+                            service.restart()
                         },
                         Event::FileChange(path) => {
                             if path == file {
